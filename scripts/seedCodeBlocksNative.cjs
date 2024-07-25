@@ -1,5 +1,5 @@
-const { MongoClient } = require('mongodb');
-const { mongoDBURL } = require('../server/config');
+const { MongoClient } = require('mongodb'); 
+const { mongoDBURL } = require('../server/config'); 
 
 // Enable debug mode for MongoClient
 const client = new MongoClient(mongoDBURL, {
@@ -9,14 +9,16 @@ const client = new MongoClient(mongoDBURL, {
   socketTimeoutMS: 120000, // Increase the socket timeout
 });
 
+// Function to seed the database with initial code blocks
 async function seedDatabase() {
   try {
-    await client.connect();
+    await client.connect(); // Connect to the MongoDB server
     console.log('Connected to MongoDB');
 
-    const db = client.db('CodeBlockDB');
-    const collection = db.collection('codeblocks');
+    const db = client.db('CodeBlockDB'); // Use the 'CodeBlockDB' database
+    const collection = db.collection('codeblocks'); // Use the 'codeblocks' collection
 
+    // Initial code blocks to be inserted into the database
     const initialCodeBlocks = [
       {
         name: 'Event Loop Explanation',
@@ -41,17 +43,18 @@ async function seedDatabase() {
     ];
 
     console.log('Inserting initial code blocks...');
+    // Insert each code block into the collection
     for (let block of initialCodeBlocks) {
       console.log(`Inserting block: ${block.name}`);
-      await collection.insertOne(block);
+      await collection.insertOne(block); // Insert the code block into the collection
       console.log(`Inserted code block: ${block.name}`);
     }
     console.log('Initial code blocks inserted');
   } catch (error) {
-    console.error('Error inserting initial code blocks', error);
+    console.error('Error inserting initial code blocks', error); // Log any errors that occur during the insertion
   } finally {
-    await client.close();
+    await client.close(); // Close the MongoDB client
   }
 }
 
-seedDatabase();
+seedDatabase(); // Call the seedDatabase function to start the seeding process

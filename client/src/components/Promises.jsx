@@ -6,9 +6,10 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import { useNavigate } from 'react-router-dom';
 
-const socket = io('http://localhost:5555'); // Ensure this matches your server URL and port
+const socket = io('http://localhost:5555'); 
 
 const Promises = () => {
+  // State variables for managing code, solution, role, and student count
   const [code, setCode] = useState('// Loading code...');
   const [solutionCode, setSolutionCode] = useState('');
   const [role, setRole] = useState('');
@@ -26,6 +27,7 @@ const Promises = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        console.log('Fetched data:', data);
         setCode(data.initialCode);
         setSolutionCode(data.solutionCode);
       } catch (error) {
@@ -33,11 +35,14 @@ const Promises = () => {
       }
     };
 
+    // Call the fetch function to get code block data
     fetchCodeBlock();
 
+    // Join the specific room for real-time updates
     console.log(`Joining room: ${blockName}`);
     socket.emit('joinRoom', blockName);
 
+    // Socket event listeners for various updates
     socket.on('connect', () => {
       console.log('Connected to server');
     });
@@ -84,6 +89,7 @@ const Promises = () => {
     };
   }, [navigate]);
 
+  // Handle code changes by students
   const handleCodeChange = (newCode) => {
     setCode(newCode);
     if (role === 'student') {
@@ -91,11 +97,18 @@ const Promises = () => {
       socket.emit('codeChange', { code: newCode, blockName: 'promises' });
     }
 
+    // Log the comparison of codes for debugging
+    console.log(`Comparing codes: 
+      newCode: ${newCode.trim()} 
+      solutionCode: ${solutionCode.trim()}`);
+
+    // Check if the new code matches the solution
     if (newCode.trim() === solutionCode.trim()) {
       alert('😊 Correct solution!');
     }
   };
 
+  // Handle leaving the room
   const handleLeave = () => {
     const blockName = 'promises';
     console.log(`Leaving room: ${blockName}`);
@@ -105,6 +118,8 @@ const Promises = () => {
     }
     navigate('/');
   };
+
+  //CODEBLOCK
 
   return (
     <div className='Promises'>
@@ -144,6 +159,9 @@ const Promises = () => {
 };
 
 export default Promises;
+
+
+
 
 
 

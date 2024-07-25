@@ -1,7 +1,7 @@
 {
     "promises": {
       "initialCode": "// Promises Task\nfunction myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Promise resolved!');\n    }, 1000);\n  });\n}",
-      "solutionCode": "// Promises Solution\nfunction myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Promise resolved!');\n    }, 1000);\n  });\n}\n\nmyPromise().then(result => console.log(result));"
+      "solutionCode": "function myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Promise resolved!');\n    }, 1000);\n  });\n}\n\nmyPromise().then(result => console.log(result));"
     },
     "callback-hell": {
       "initialCode": "// Callback Hell Task\nfunction doSomething(callback) {\n  setTimeout(() => {\n    console.log('Doing something...');\n    callback();\n  }, 1000);\n}\n\ndoSomething(() => {\n  console.log('Callback executed');\n});",

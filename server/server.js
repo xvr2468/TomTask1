@@ -1,58 +1,59 @@
-const express = require("express");
-const { PORT = 5555, mongoDBURL } = require('./config');
-const mongoose = require("mongoose");
-const cors = require('cors');
-const http = require('http');
-const { Server } = require("socket.io");
-const path = require('path');
-const codeBlocksConfig = require('./codeBlocksConfig.json'); // Load the config file
+const express = require("express"); 
+const { PORT = 5555, mongoDBURL } = require('./config'); 
+const mongoose = require("mongoose"); 
+const cors = require('cors'); 
+const http = require('http'); 
+const { Server } = require("socket.io"); 
+const path = require('path'); 
+const codeBlocksConfig = require('./codeBlocksConfig.json'); 
 
-const app = express();
-const server = http.createServer(app);
+const app = express(); // Initialize Express app
+const server = http.createServer(app); // Create HTTP server
 const io = new Server(server, {
-	cors: {
-	  origin: "*",
-	}
-  });
+  cors: {
+    origin: "*", // Allow all origins (not recommended for production)
+  }
+});
 
-
-
-app.use(express.json());
-app.use(cors());
+app.use(express.json()); // Middleware to parse JSON
+app.use(cors()); // Middleware to enable CORS
 
 let mentors = {}; // Track mentors for each code block
-let students = {};
+let students = {}; // Track students for each code block
 
+// Handle new socket connection
 io.on('connection', (socket) => {
-	socket.on('joinRoom', (blockName) => {
-		socket.join(blockName);
-	
-		if (!mentors[blockName]) {
-		  mentors[blockName] = socket.id;
-		  socket.emit('role', 'mentor');
-		} else {
-		  if (!students[blockName]) {
-			students[blockName] = [];
-		  }
-		  students[blockName].push(socket.id);
-		  socket.emit('role', 'student');
-		  io.to(blockName).emit('studentCount', students[blockName].length);
-		}
-	
-		console.log(`Mentor connected: ${!!mentors[blockName]}, Students count: ${students[blockName] ? students[blockName].length : 0}`);
-	  });
+  // Handle joining a room
+  socket.on('joinRoom', (blockName) => {
+    socket.join(blockName); // Join the specified room
 
-  socket.on('codeChange', (code) => {
-    console.log('Code change received:', code);
-    socket.broadcast.emit('codeUpdate', code);
+    // Assign roles and update counts
+    if (!mentors[blockName]) {
+      mentors[blockName] = socket.id;
+      socket.emit('role', 'mentor');
+    } else {
+      if (!students[blockName]) {
+        students[blockName] = [];
+      }
+      students[blockName].push(socket.id);
+      socket.emit('role', 'student');
+      io.to(blockName).emit('studentCount', students[blockName].length);
+    }
+
+    console.log(`Mentor connected: ${!!mentors[blockName]}, Students count: ${students[blockName] ? students[blockName].length : 0}`);
   });
 
+  // Handle code changes
+  socket.on('codeChange', (code) => {
+    console.log('Code change received:', code);
+    socket.broadcast.emit('codeUpdate', code); // Broadcast code change to other users
+  });
 
-
-
+  // Handle leaving a room
   socket.on('leaveRoom', (blockName) => {
     socket.leave(blockName);
 
+    // Update mentor and student status
     if (socket.id === mentors[blockName]) {
       delete mentors[blockName];
       io.to(blockName).emit('mentorLeft');
@@ -69,6 +70,7 @@ io.on('connection', (socket) => {
     console.log(`Mentor connected: ${!!mentors[blockName]}, Students count: ${students[blockName] ? students[blockName].length : 0}`);
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
     for (let blockName in students) {
       if (students[blockName].includes(socket.id)) {
@@ -86,6 +88,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Handle mentor exit
   socket.on('mentorExit', (blockName) => {
     if (mentors[blockName] === socket.id) {
       delete mentors[blockName];
@@ -96,19 +99,18 @@ io.on('connection', (socket) => {
   });
 });
 
-
-
 // Endpoint to fetch code block by name
 app.get('/api/codeblock/:name', (req, res) => {
   const blockName = req.params.name;
   const codeBlock = codeBlocksConfig[blockName];
   if (codeBlock) {
-    res.json(codeBlock);
+    res.json(codeBlock); // Respond with code block data if found
   } else {
-    res.status(404).json({ error: 'Code block not found' });
+    res.status(404).json({ error: 'Code block not found' }); // Respond with 404 if not found
   }
 });
 
+// Connect to MongoDB using Mongoose
 mongoose
   .connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -128,6 +130,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
+
 
 
 
