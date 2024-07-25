@@ -5,6 +5,7 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require("socket.io");
 const path = require('path');
+const codeBlocksConfig = require('./codeBlocksConfig.json'); // Load the config file
 
 const app = express();
 const server = http.createServer(app);
@@ -95,6 +96,19 @@ io.on('connection', (socket) => {
   });
 });
 
+
+
+// Endpoint to fetch code block by name
+app.get('/api/codeblock/:name', (req, res) => {
+  const blockName = req.params.name;
+  const codeBlock = codeBlocksConfig[blockName];
+  if (codeBlock) {
+    res.json(codeBlock);
+  } else {
+    res.status(404).json({ error: 'Code block not found' });
+  }
+});
+
 mongoose
   .connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -115,17 +129,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
-app.get('/api/codeblock/:name', async (req, res) => {
-  try {
-    const codeBlock = await CodeBlock.findOne({ name: req.params.name });
-    if (codeBlock) {
-      res.json(codeBlock);
-    } else {
-      res.status(404).json({ error: 'Code block not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred while fetching the code block' });
-  }
-});
+
+
+
 
 

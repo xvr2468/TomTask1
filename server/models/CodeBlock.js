@@ -9,4 +9,3 @@ const codeBlockSchema = new mongoose.Schema({
 const CodeBlock = mongoose.model('CodeBlock', codeBlockSchema);
 
 module.exports = CodeBlock;
-

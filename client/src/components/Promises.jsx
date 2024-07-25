@@ -6,85 +6,75 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import { useNavigate } from 'react-router-dom';
 
-// Initial code (task) for the Promises page
-const initialCode = `// Promises Task
-// Create a function that returns a promise which resolves after 2 seconds and logs "Promise resolved!".
-function createPromise() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve('Promise resolved!');
-    }, 2000);
-  });
-}
-
-createPromise().then((message) => {
-  console.log(message);
-});`;
-
-// Solution code for the Promises task
-const solutionCode = `// Promises Solution
-function createPromise() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve('Promise resolved!');
-    }, 2000);
-  });
-}
-
-createPromise().then((message) => {
-  console.log(message);
-});`;
-
-const socket = io('http://localhost:5555'); 
+const socket = io('http://localhost:5555'); // Ensure this matches your server URL and port
 
 const Promises = () => {
-  const [code, setCode] = useState(initialCode); // State to store the code
-  const [role, setRole] = useState(''); // State to store the role (mentor/student)
-  const [studentsCount, setStudentsCount] = useState(0); // State to store the number of students
-  const navigate = useNavigate(); // Hook to navigate programmatically
+  const [code, setCode] = useState('// Loading code...');
+  const [solutionCode, setSolutionCode] = useState('');
+  const [role, setRole] = useState('');
+  const [studentsCount, setStudentsCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const blockName = 'promises'; // Explicitly set the block name for this component
+
+    // Fetch the initial code and solution from the server
+    const fetchCodeBlock = async () => {
+      try {
+        const response = await fetch(`http://localhost:5555/api/codeblock/${blockName}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCode(data.initialCode);
+        setSolutionCode(data.solutionCode);
+      } catch (error) {
+        console.error('Error fetching code block:', error);
+      }
+    };
+
+    fetchCodeBlock();
+
     console.log(`Joining room: ${blockName}`);
-    socket.emit('joinRoom', blockName); // Emit event to join room
+    socket.emit('joinRoom', blockName);
 
     socket.on('connect', () => {
-      console.log('Connected to server'); // Log when connected to the server
+      console.log('Connected to server');
     });
 
     socket.on('role', (assignedRole) => {
-      console.log(`Assigned role: ${assignedRole}`); // Log assigned role
-      setRole(assignedRole); // Set the role
+      console.log(`Assigned role: ${assignedRole}`);
+      setRole(assignedRole);
     });
 
     socket.on('updateCode', (updatedCode) => {
-      console.log('Received code update:', updatedCode); // Log received code update
-      setCode(updatedCode); // Update the code
+      console.log('Received code update:', updatedCode);
+      setCode(updatedCode);
     });
 
     socket.on('studentCount', (count) => {
-      console.log(`Students count: ${count}`); // Log student count
-      setStudentsCount(count); // Update the student count
+      console.log(`Students count: ${count}`);
+      setStudentsCount(count);
     });
 
     socket.on('mentorLeft', () => {
-      console.log('Mentor has left'); // Log when mentor leaves
+      console.log('Mentor has left');
       alert('Mentor has left the session. You will be redirected to the lobby.');
-      setCode(initialCode); // Reset code
-      navigate('/'); // Navigate to the lobby
+      setCode('// Code reset due to mentor leaving...');
+      navigate('/');
     });
 
     socket.on('redirect', () => {
-      console.log('Redirecting to lobby'); // Log redirect
+      console.log('Redirecting to lobby');
       alert('Mentor has left the session. Redirecting to lobby.');
-      setCode(initialCode); // Reset code
-      navigate('/'); // Navigate to the lobby
+      setCode('// Code reset due to mentor leaving...');
+      navigate('/');
     });
 
     // Clean up event listeners on component unmount
     return () => {
-      console.log(`Leaving room: ${blockName}`); // Log leaving room
-      socket.emit('leaveRoom', blockName); // Emit event to leave room
+      console.log(`Leaving room: ${blockName}`);
+      socket.emit('leaveRoom', blockName);
       socket.off('connect');
       socket.off('role');
       socket.off('updateCode');
@@ -92,32 +82,29 @@ const Promises = () => {
       socket.off('mentorLeft');
       socket.off('redirect');
     };
-  }, [navigate]); // Ensure this only runs when 'navigate' changes
+  }, [navigate]);
 
   const handleCodeChange = (newCode) => {
-    setCode(newCode); // Update the code state
+    setCode(newCode);
     if (role === 'student') {
-      console.log(`Emitting code change: ${newCode}`); // Log code change
-      socket.emit('codeChange', { code: newCode, blockName: 'promises' }); // Emit code change event
+      console.log(`Emitting code change: ${newCode}`);
+      socket.emit('codeChange', { code: newCode, blockName: 'promises' });
     }
 
-    // Check if the new code matches the solution
-    if (newCode === solutionCode) {
+    if (newCode.trim() === solutionCode.trim()) {
       alert('😊 Correct solution!');
     }
   };
 
   const handleLeave = () => {
-    const blockName = 'promises'; // Explicitly set the block name for this component
-    console.log(`Leaving room: ${blockName}`); // Log leaving room
-    socket.emit('leaveRoom', blockName); // Emit event to leave room
+    const blockName = 'promises';
+    console.log(`Leaving room: ${blockName}`);
+    socket.emit('leaveRoom', blockName);
     if (role === 'mentor') {
-      socket.emit('mentorExit', blockName); // Emit mentor exit event
+      socket.emit('mentorExit', blockName);
     }
-    navigate('/'); // Navigate to the lobby
+    navigate('/');
   };
-
-  //CODEBLOCK
 
   return (
     <div className='Promises'>
@@ -157,4 +144,10 @@ const Promises = () => {
 };
 
 export default Promises;
+
+
+
+
+
+
 
