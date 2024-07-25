@@ -1,0 +1,46 @@
+body, html {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .Lobby-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Align items at the top */
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .Lobby h1 {
+    font-size: 3em; /* Increased font size */
+    margin-bottom: 20px;
+  }
+  
+  .Lobby ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .Lobby li {
+    margin: 15px 0;
+  }
+  
+  .Lobby a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 1.5em; /* Increased font size */
+  }
+  
+  .Lobby a:hover {
+    text-decoration: underline;
+  }
+  
+  .Lobby img {
+    width: 300px; /* Adjust the size as needed */
+    margin-top: 20px;
+    border-radius: 8px; 
+  }
+  
+  
