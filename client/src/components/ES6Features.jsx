@@ -5,6 +5,7 @@ import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import { useNavigate } from 'react-router-dom';
+import './styles.css';
 
 const socket = io('http://localhost:5555'); 
 
@@ -13,6 +14,7 @@ const ES6Features = () => {
   const [solutionCode, setSolutionCode] = useState(''); // State to store the solution code
   const [role, setRole] = useState(''); // State to store the role (mentor/student)
   const [studentsCount, setStudentsCount] = useState(0); // State to store the number of students
+  const [isCorrectSolution, setIsCorrectSolution] = useState(false); // Track if the solution is correct
   const navigate = useNavigate(); // Hook to navigate programmatically
 
   useEffect(() => {
@@ -103,7 +105,9 @@ const ES6Features = () => {
 
     // Check if the new code matches the solution
     if (newCode.trim() === solutionCode.trim()) {
-      alert('😊 Correct solution!');
+      setIsCorrectSolution(true); // Update the state to indicate the solution is correct
+    } else {
+      setIsCorrectSolution(false); // Reset if the code is changed and not correct
     }
   };
 
@@ -125,6 +129,7 @@ const ES6Features = () => {
       <h1>ES6 Features</h1>
       <p>Role: {role}</p>
       <p>Students in the room: {studentsCount}</p>
+      {isCorrectSolution && <div className="smiley">😊 Correct solution!</div>}
       {role === 'mentor' ? (
         <Editor
           value={code}

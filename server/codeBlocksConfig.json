@@ -1,19 +1,23 @@
 {
     "promises": {
-      "initialCode": "// Promises Task\nfunction myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Promise resolved!');\n    }, 1000);\n  });\n}",
-      "solutionCode": "function myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Promise resolved!');\n    }, 1000);\n  });\n}\n\nmyPromise().then(result => console.log(result));"
+        "initialCode": "// Promises Task\n// Create a promise that resolves to 'Hello, World!' after 1 second\nfunction myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Hello, World!');\n    }, 1000);\n  });\n}\n\n// Call myPromise and handle the resolved value\n// Solution hint: Ensure your final console log is on a separate line\n// Remember to remove all comments for the solution",
+        "solutionCode": "function myPromise() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve('Hello, World!');\n    }, 1000);\n  });\n}\n\nmyPromise().then(result => console.log(result));"
     },
     "callback-hell": {
-      "initialCode": "// Callback Hell Task\nfunction doSomething(callback) {\n  setTimeout(() => {\n    console.log('Doing something...');\n    callback();\n  }, 1000);\n}\n\ndoSomething(() => {\n  console.log('Callback executed');\n});",
-      "solutionCode": "// Callback Hell Solution\nfunction doSomething(callback) {\n  setTimeout(() => {\n    console.log('Doing something...');\n    callback(() => {\n      console.log('Nested callback executed');\n    });\n  }, 1000);\n}\n\ndoSomething((nestedCallback) => {\n  console.log('Callback executed');\n  nestedCallback();\n});"
+        "initialCode": "// Callback Hell Task\n// Use nested callbacks to log 'Step 1', 'Step 2', and 'Step 3' in order\nfunction step1(callback) {\n  setTimeout(() => {\n    console.log('Step 1');\n    callback();\n  }, 500);\n}\n\nfunction step2(callback) {\n  setTimeout(() => {\n    console.log('Step 2');\n    callback();\n  }, 500);\n}\n\nfunction step3(callback) {\n  setTimeout(() => {\n    console.log('Step 3');\n    callback();\n  }, 500);\n}\n\n// Execute the steps in order using callbacks\n// Solution hint: Ensure the nested callback execution is properly spaced\n// Remember to remove all comments for the solution",
+        "solutionCode": "function step1(callback) {\n  setTimeout(() => {\n    console.log('Step 1');\n    callback();\n  }, 500);\n}\n\nfunction step2(callback) {\n  setTimeout(() => {\n    console.log('Step 2');\n    callback();\n  }, 500);\n}\n\nfunction step3(callback) {\n  setTimeout(() => {\n    console.log('Step 3');\n    callback();\n  }, 500);\n}\n\nstep1(() => {\n  step2(() => {\n    step3(() => {\n      console.log('All steps completed');\n    });\n  });\n});"
     },
     "event-loop": {
-      "initialCode": "// Event Loop Task\nconsole.log('This is the event loop');",
-      "solutionCode": "// Event Loop Solution\nconsole.log('Start');\nsetTimeout(() => {\n  console.log('Timeout');\n}, 0);\nPromise.resolve().then(() => console.log('Promise'));\nconsole.log('End');"
+        "initialCode": "// Event Loop Task\n// Demonstrate the event loop by logging 'Start', then 'Promise', then 'End', and finally 'Timeout'\nconsole.log('Start');\n\nsetTimeout(() => {\n  console.log('Timeout');\n}, 0);\n\nPromise.resolve().then(() => console.log('Promise'));\n\nconsole.log('End');\n// Solution hint: Ensure the setTimeout and Promise are properly spaced\n// Remember to remove all comments for the solution",
+        "solutionCode": "console.log('Start');\n\nsetTimeout(() => {\n  console.log('Timeout');\n}, 0);\n\nPromise.resolve().then(() => console.log('Promise'));\n\nconsole.log('End');"
     },
     "es6-features": {
-      "initialCode": "// ES6 Features Task\nconst arrowFunction = () => {\n  console.log('Arrow function');\n};",
-      "solutionCode": "// ES6 Features Solution\nconst arrowFunction = () => {\n  console.log('Arrow function executed');\n};\n\narrowFunction();"
+        "initialCode": "// ES6 Features Task\n// Create an arrow function that returns the square of a number and log the result for 3\nconst square = (x) => {\n  return x * x;\n};\n\n// Log the result for 3\n// Solution hint: Make sure your final console log is on a separate line\n// Remember to remove all comments for the solution",
+        "solutionCode": "const square = (x) => {\n  return x * x;\n};\n\nconsole.log(square(3));"
     }
-  }
+}
+
+
+
+  
   

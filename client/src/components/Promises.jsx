@@ -5,6 +5,8 @@ import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import { useNavigate } from 'react-router-dom';
+import './styles.css'; // Import your styles
+
 
 const socket = io('http://localhost:5555'); 
 
@@ -14,6 +16,7 @@ const Promises = () => {
   const [solutionCode, setSolutionCode] = useState('');
   const [role, setRole] = useState('');
   const [studentsCount, setStudentsCount] = useState(0);
+  const [isCorrectSolution, setIsCorrectSolution] = useState(false); // Track if the solution is correct
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -104,7 +107,9 @@ const Promises = () => {
 
     // Check if the new code matches the solution
     if (newCode.trim() === solutionCode.trim()) {
-      alert('😊 Correct solution!');
+      setIsCorrectSolution(true); // Update the state to indicate the solution is correct
+    } else {
+      setIsCorrectSolution(false); // Reset if the code is changed and not correct
     }
   };
 
@@ -126,6 +131,7 @@ const Promises = () => {
       <h1>Promises</h1>
       <p>Role: {role}</p>
       <p>Students in the room: {studentsCount}</p>
+      {isCorrectSolution && <div className="smiley">😊 Correct solution!</div>}
       {role === 'mentor' ? (
         <Editor
           value={code}
