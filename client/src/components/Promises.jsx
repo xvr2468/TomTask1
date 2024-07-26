@@ -5,14 +5,14 @@ import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import { useNavigate } from 'react-router-dom';
-import './styles.css'; // Import your styles
-
+import './styles.css';
 
 const socket = io('http://localhost:5555'); 
 
 const Promises = () => {
   // State variables for managing code, solution, role, and student count
   const [code, setCode] = useState('// Loading code...');
+  const [initialCode, setInitialCode] = useState('');
   const [solutionCode, setSolutionCode] = useState('');
   const [role, setRole] = useState('');
   const [studentsCount, setStudentsCount] = useState(0);
@@ -32,6 +32,7 @@ const Promises = () => {
         const data = await response.json();
         console.log('Fetched data:', data);
         setCode(data.initialCode);
+        setInitialCode(data.initialCode); // Store the initial code
         setSolutionCode(data.solutionCode);
       } catch (error) {
         console.error('Error fetching code block:', error);
@@ -124,8 +125,13 @@ const Promises = () => {
     navigate('/');
   };
 
-  //CODEBLOCK
+  // Handle resetting the code to initial state
+  const handleReset = () => {
+    setCode(initialCode);
+    setIsCorrectSolution(false);
+  };
 
+  // Render the component
   return (
     <div className='Promises'>
       <h1>Promises</h1>
@@ -160,11 +166,16 @@ const Promises = () => {
         />
       )}
       <button onClick={handleLeave}>Leave to Lobby</button>
+      {role === 'student' && (
+        <button onClick={handleReset} style={{ marginLeft: '10px' }}>Reset Code</button>
+      )}
     </div>
   );
 };
 
 export default Promises;
+
+
 
 
 

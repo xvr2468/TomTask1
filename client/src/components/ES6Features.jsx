@@ -11,6 +11,7 @@ const socket = io('http://localhost:5555');
 
 const ES6Features = () => {
   const [code, setCode] = useState('// Loading code...'); // State to store the code
+  const [initialCode, setInitialCode] = useState(''); // State to store the initial code
   const [solutionCode, setSolutionCode] = useState(''); // State to store the solution code
   const [role, setRole] = useState(''); // State to store the role (mentor/student)
   const [studentsCount, setStudentsCount] = useState(0); // State to store the number of students
@@ -30,6 +31,7 @@ const ES6Features = () => {
         const data = await response.json();
         console.log('Fetched data:', data);
         setCode(data.initialCode);
+        setInitialCode(data.initialCode); // Store the initial code
         setSolutionCode(data.solutionCode);
       } catch (error) {
         console.error('Error fetching code block:', error);
@@ -122,8 +124,13 @@ const ES6Features = () => {
     navigate('/'); // Navigate to the lobby
   };
 
-  //CODEBLOCK
+  // Handle resetting the code to initial state
+  const handleReset = () => {
+    setCode(initialCode);
+    setIsCorrectSolution(false);
+  };
 
+  // Render the component
   return (
     <div className='ES6Features'>
       <h1>ES6 Features</h1>
@@ -158,11 +165,15 @@ const ES6Features = () => {
         />
       )}
       <button onClick={handleLeave}>Leave to Lobby</button>
+      {role === 'student' && (
+        <button onClick={handleReset} style={{ marginLeft: '10px' }}>Reset Code</button>
+      )}
     </div>
   );
 };
 
 export default ES6Features;
+
 
 
 

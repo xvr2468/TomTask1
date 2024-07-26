@@ -6,7 +6,7 @@ body, html {
   .Lobby-container {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Align items at the top */
+    justify-content: center; 
     align-items: center;
     height: 100%;
     text-align: center;
@@ -14,7 +14,7 @@ body, html {
   }
   
   .Lobby h1 {
-    font-size: 3em; /* Increased font size */
+    font-size: 3em; 
     margin-bottom: 20px;
   }
   
@@ -30,7 +30,7 @@ body, html {
   .Lobby a {
     text-decoration: none;
     color: #007bff;
-    font-size: 1.5em; /* Increased font size */
+    font-size: 1.5em; 
   }
   
   .Lobby a:hover {

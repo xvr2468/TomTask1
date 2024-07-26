@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Lobby.css'; // Import the CSS for styling the Lobby component
+import './Lobby.css'; 
 
 const Lobby = () => {
   // Define the list of code blocks with their names and paths
